@@ -24,7 +24,6 @@ def main():
     print("Please supply an inflected word on the command line. Example: search_by_lemma.py κύνεσσιν\n")
     sys.exit()
   infl = sys.argv[1]
-  #infl = "κύνεσσιν" # inflected form of work we're looking up
   lem = lemmatize(infl)[0] # lemmatized
   print("searching for "+lem+" <- "+infl)
   index = {}
@@ -80,11 +79,15 @@ def pos_tag_to_description(tag):
   case = tag[7]
   degree = tag[8]
   d = []
-  d = h(d,{'n':'noun','v':'verb'},part_of_speech)
-  d = h(d,{'1':'1st p.','1':'2nd p.','3':'3rd p.'},person)
+  if part_of_speech!='n' and part_of_speech!='v':
+    d = h(d,{'n':'noun','v':'verb','t':'participle','a':'adj.','d':'adv.','c':'conj.','r':'prep.','p':'pron.','m':'numeral','i':'interj.','e':'excl.','u':'punct.'},part_of_speech)
+  d = h(d,{'1':'1st','1':'2nd','3':'3rd'},person)
   d = h(d,{'s':'sing.','p':'pl.'},number)
   d = h(d,{'m':'masc.','d':'fem.','n':'neut.'},gender)
   d = h(d,{'n':'nom.','g':'gen.','d':'dat.','a':'acc.','b':'abl.','v':'voc.','l':'loc.'},case)
+  d = h(d,{'p':'pres.','i':'imp.','r':'perf.','l':'pluperf.','t':'fut. perf.','f':'fut.','a':'aor.'},tense)
+  if mood!='-' and mood!='i':
+    d=h(d,{'i':'ind.','s':'subj.','n':'inf.','m':'imper.','p':'part.','d':'ger.','g':'gerundive','u':'supine'},mood)
   return ' '.join(d)
 
 def h(d,dict,key):
